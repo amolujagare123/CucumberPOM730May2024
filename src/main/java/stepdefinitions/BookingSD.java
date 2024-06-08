@@ -2,10 +2,12 @@ package stepdefinitions;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.junit.Assert;
 import pages.BookingsPage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static stepdefinitions.SharedSD.getDriver;
 
@@ -16,7 +18,7 @@ public class BookingSD {
     @Given("I am on default locations search result screen")
     public void i_am_on_default_locations_search_result_screen() {
 
-        getDriver().navigate().refresh();
+       getDriver().navigate().refresh();
 
         try {
             bookingsPage.closePopUp();
@@ -66,5 +68,29 @@ public class BookingSD {
         Assert.assertTrue("some prices are greater than given price :"+expectedPrice+
                         "\nGreater price list:"+greaterPriceList,
                 flag);
+    }
+
+    @When("I select option for stars as {}")
+    public void iSelectOptionForStarsAs(String star) //5 star
+    {
+        String myStar = star.split(" ")[0];
+        int starInt = Integer.parseInt(myStar);
+        bookingsPage.clickRating(myStar);
+        ArrayList<Integer> starList = bookingsPage.getRatingStars();
+
+        int size = starList.size();
+        int occurance = Collections.frequency(starList,starInt);
+
+        System.out.println("size="+size);
+        System.out.println("occurance="+occurance);
+
+        boolean result = (size==occurance) ;
+
+        Assert.assertTrue("all hotels are not having "+starInt+" Stars",result);
+
+    }
+
+    @Then("I verify system displays only {} hotels on search result")
+    public void iVerifySystemDisplaysOnlyHotelsOnSearchResult(String star) {
     }
 }
